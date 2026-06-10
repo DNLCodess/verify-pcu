@@ -4,11 +4,11 @@ import { MAIN_SITE_URL } from "../lib/config";
 export default function Header() {
   return (
     <header className="fixed top-0 left-0 w-full z-50 shadow-md">
-      {/* Top accent bar — mirrors the main site */}
+      {/* Top accent bar - mirrors the main site */}
       <div className="bg-accent text-white text-xs">
         <div className="mx-auto max-w-7xl px-4 h-9 flex items-center justify-between">
           <span className="hidden sm:inline">
-            Official Certificate Verification &mdash; University Registry
+            Official Certificate Verification - University Registry
           </span>
           <a
             href={MAIN_SITE_URL}

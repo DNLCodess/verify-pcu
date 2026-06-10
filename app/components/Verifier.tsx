@@ -25,7 +25,7 @@ export default function Verifier() {
 
   return (
     <div className="mx-auto max-w-xl">
-      {/* Stepper — sits on the purple hero band, so it's styled light */}
+      {/* Stepper - sits on the purple hero band, so it's styled light */}
       <ol className="flex items-center justify-center gap-3 text-xs font-semibold uppercase tracking-wider mb-8">
         <Step
           n={1}
@@ -55,10 +55,10 @@ export default function Verifier() {
               aria-hidden
             />
             <span>
-              Class of <strong>{year}</strong> &mdash;{" "}
+              Class of <strong>{year}</strong>.{" "}
               {usesCertificateNumber
-                ? "verify with your certificate number."
-                : "verify with your name, department and matric number."}
+                ? "Verify with your certificate number."
+                : "Verify with your name, department and matric number."}
             </span>
           </div>
 

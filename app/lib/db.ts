@@ -1,24 +1,35 @@
-import { Pool } from "pg";
+import mysql from "mysql2/promise";
+import type { RowDataPacket } from "mysql2";
 
 /**
  * A single shared connection pool. In dev, Next.js hot-reloads modules, so we
  * stash the pool on `globalThis` to avoid opening a new pool on every reload.
  */
-const globalForDb = globalThis as unknown as { pcuPool?: Pool };
+const globalForDb = globalThis as unknown as { pcuPool?: mysql.Pool };
 
-export const pool =
-  globalForDb.pcuPool ??
-  new Pool({
-    connectionString: process.env.DATABASE_URL,
-    // Most managed Postgres providers require SSL. Toggle with PGSSL=disable.
+function createPool(): mysql.Pool {
+  // DATABASE_URL looks like: mysql://user:password@host:3306/dbname
+  const url = new URL(
+    process.env.DATABASE_URL ?? "mysql://root@localhost:3306/pcu_verify",
+  );
+
+  return mysql.createPool({
+    host: url.hostname,
+    port: Number(url.port || 3306),
+    user: decodeURIComponent(url.username),
+    password: decodeURIComponent(url.password),
+    database: url.pathname.replace(/^\//, ""),
+    waitForConnections: true,
+    connectionLimit: 5,
+    // Some remote/managed MySQL hosts require SSL. Enable with MYSQL_SSL=require.
     ssl:
-      process.env.PGSSL === "disable"
-        ? false
-        : process.env.DATABASE_URL?.includes("localhost") ||
-            process.env.DATABASE_URL?.includes("127.0.0.1")
-          ? false
-          : { rejectUnauthorized: false },
+      process.env.MYSQL_SSL === "require"
+        ? { rejectUnauthorized: false }
+        : undefined,
   });
+}
+
+export const pool = globalForDb.pcuPool ?? createPool();
 
 if (process.env.NODE_ENV !== "production") globalForDb.pcuPool = pool;
 
@@ -33,7 +44,7 @@ export type CertificateRecord = {
   graduationYear: number;
 };
 
-type Row = {
+type Row = RowDataPacket & {
   full_name: string;
   department: string;
   matric_number: string | null;
@@ -65,13 +76,13 @@ export async function verifyByMatric(input: {
   department: string;
   matricNumber: string;
 }): Promise<CertificateRecord | null> {
-  const { rows } = await pool.query<Row>(
+  const [rows] = await pool.query<Row[]>(
     `SELECT full_name, department, matric_number, certificate_number,
             programme, classification, graduation_year
        FROM certificates
-      WHERE lower(btrim(full_name)) = lower(btrim($1))
-        AND lower(btrim(department)) = lower(btrim($2))
-        AND lower(btrim(matric_number)) = lower(btrim($3))
+      WHERE LOWER(TRIM(full_name)) = LOWER(TRIM(?))
+        AND LOWER(TRIM(department)) = LOWER(TRIM(?))
+        AND LOWER(TRIM(matric_number)) = LOWER(TRIM(?))
       LIMIT 1`,
     [input.fullName, input.department, input.matricNumber],
   );
@@ -84,11 +95,11 @@ export async function verifyByMatric(input: {
 export async function verifyByCertificateNumber(
   certificateNumber: string,
 ): Promise<CertificateRecord | null> {
-  const { rows } = await pool.query<Row>(
+  const [rows] = await pool.query<Row[]>(
     `SELECT full_name, department, matric_number, certificate_number,
             programme, classification, graduation_year
        FROM certificates
-      WHERE lower(btrim(certificate_number)) = lower(btrim($1))
+      WHERE LOWER(TRIM(certificate_number)) = LOWER(TRIM(?))
       LIMIT 1`,
     [certificateNumber],
   );

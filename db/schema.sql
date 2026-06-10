@@ -1,26 +1,25 @@
--- PCU Certificate Verification — database schema
--- Run once against your Postgres database:  psql "$DATABASE_URL" -f db/schema.sql
+-- PCU Certificate Verification - database schema (MySQL / MariaDB)
+-- Load via cPanel phpMyAdmin (Import tab), or the shell:
+--   mysql -u USER -p DBNAME < db/schema.sql
 
 CREATE TABLE IF NOT EXISTS certificates (
-  id                  SERIAL PRIMARY KEY,
-  full_name           TEXT        NOT NULL,
-  department          TEXT        NOT NULL,
-  -- Legacy graduates (2017–2025) are verified by matric number.
-  matric_number       TEXT,
+  id                  INT AUTO_INCREMENT PRIMARY KEY,
+  full_name           VARCHAR(255) NOT NULL,
+  department          VARCHAR(255) NOT NULL,
+  -- Legacy graduates (2017-2025) are verified by matric number.
+  matric_number       VARCHAR(100) NULL,
   -- Graduates from 2026 onward carry a unique certificate number.
-  certificate_number  TEXT        UNIQUE,
-  programme           TEXT,
-  classification      TEXT,        -- e.g. "First Class", "Second Class Upper"
-  graduation_year     INTEGER     NOT NULL,
-  created_at          TIMESTAMPTZ NOT NULL DEFAULT now()
-);
+  certificate_number  VARCHAR(100) NULL,
+  programme           VARCHAR(255) NULL,
+  classification      VARCHAR(100) NULL,   -- e.g. "First Class", "Second Class Upper"
+  graduation_year     INT NOT NULL,
+  created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
--- Case-insensitive lookups used by the app (see app/lib/db.ts).
-CREATE INDEX IF NOT EXISTS certificates_matric_idx
-  ON certificates (lower(btrim(matric_number)));
-
-CREATE INDEX IF NOT EXISTS certificates_certno_idx
-  ON certificates (lower(btrim(certificate_number)));
-
-CREATE INDEX IF NOT EXISTS certificates_lookup_idx
-  ON certificates (lower(btrim(full_name)), lower(btrim(department)));
+  -- A NULL certificate_number is allowed for many rows (legacy cohort);
+  -- MySQL permits multiple NULLs in a UNIQUE index.
+  UNIQUE KEY uq_certificate_number (certificate_number),
+  KEY certificates_matric_idx (matric_number),
+  KEY certificates_lookup_idx (full_name, department)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;

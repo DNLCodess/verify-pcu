@@ -1,4 +1,5 @@
 import Verifier from "./components/Verifier";
+import { CONTACT } from "./lib/config";
 
 export default function Home() {
   return (
@@ -26,16 +27,42 @@ export default function Home() {
       {/* ---------- VERIFIER ---------- */}
       <section className="mx-auto max-w-7xl px-4 -mt-10 relative z-10 pb-16">
         <Verifier />
-        <p className="mx-auto max-w-xl mt-8 text-center text-sm text-muted">
-          Can&apos;t find your certificate? Contact the Registry at{" "}
-          <a
-            href="mailto:registry@pcu.edu.ng"
-            className="font-semibold text-accent hover:underline"
-          >
-            registry@pcu.edu.ng
-          </a>
-          .
-        </p>
+        <div className="mx-auto max-w-xl mt-10 text-center">
+          <p className="text-sm text-muted">
+            For inquiries, please contact the {CONTACT.unit}:
+          </p>
+          <ul className="mt-4 flex flex-col items-center gap-3 text-sm">
+            <li className="flex items-center gap-2">
+              <i className="fa-solid fa-phone text-accent" aria-hidden />
+              <a
+                href={`tel:${CONTACT.phone.replace(/\s+/g, "")}`}
+                className="font-semibold text-accent hover:underline"
+              >
+                {CONTACT.phone}
+              </a>
+            </li>
+            <li className="flex items-center gap-2">
+              <i className="fa-solid fa-envelope text-accent" aria-hidden />
+              <a
+                href={`mailto:${CONTACT.email}`}
+                className="font-semibold text-accent hover:underline break-all"
+              >
+                {CONTACT.email}
+              </a>
+            </li>
+            <li className="flex items-center gap-2">
+              <i className="fa-brands fa-whatsapp text-accent" aria-hidden />
+              <a
+                href={`https://wa.me/${CONTACT.whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-accent hover:underline"
+              >
+                Chat on WhatsApp
+              </a>
+            </li>
+          </ul>
+        </div>
       </section>
     </>
   );

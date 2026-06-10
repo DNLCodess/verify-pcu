@@ -51,7 +51,7 @@ export default function Footer() {
         {/* Contact */}
         <div>
           <h3 className="text-white! text-sm font-bold uppercase tracking-wide mb-4">
-            Registry Contact
+            {CONTACT.unit}
           </h3>
           <ul className="space-y-3 text-sm text-white/75">
             <li className="flex gap-3">
@@ -60,12 +60,28 @@ export default function Footer() {
             </li>
             <li className="flex gap-3">
               <i className="fa-solid fa-phone mt-1 text-gold" aria-hidden />
-              <span>{CONTACT.phone}</span>
+              <a
+                href={`tel:${CONTACT.phone.replace(/\s+/g, "")}`}
+                className="hover:text-gold"
+              >
+                {CONTACT.phone}
+              </a>
             </li>
             <li className="flex gap-3">
               <i className="fa-solid fa-envelope mt-1 text-gold" aria-hidden />
               <a href={`mailto:${CONTACT.email}`} className="hover:text-gold break-all">
                 {CONTACT.email}
+              </a>
+            </li>
+            <li className="flex gap-3">
+              <i className="fa-brands fa-whatsapp mt-1 text-gold" aria-hidden />
+              <a
+                href={`https://wa.me/${CONTACT.whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gold"
+              >
+                Chat on WhatsApp
               </a>
             </li>
           </ul>
