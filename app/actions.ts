@@ -1,18 +1,7 @@
 "use server";
 
-import {
-  verifyByMatric,
-  verifyByCertificateNumber,
-  type CertificateRecord,
-} from "./lib/db";
-
-export type VerifyState =
-  | { status: "idle" }
-  | { status: "verified"; record: CertificateRecord }
-  | { status: "not_found"; message: string }
-  | { status: "error"; message: string };
-
-export const initialState: VerifyState = { status: "idle" };
+import { verifyByMatric, verifyByCertificateNumber } from "./lib/db";
+import type { VerifyState } from "./lib/verify";
 
 /** Verify a 2017–2025 graduate by name + department + matric number. */
 export async function verifyLegacyAction(

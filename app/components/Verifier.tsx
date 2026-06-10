@@ -1,12 +1,8 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import {
-  verifyLegacyAction,
-  verifyCertificateAction,
-  initialState,
-  type VerifyState,
-} from "../actions";
+import { verifyLegacyAction, verifyCertificateAction } from "../actions";
+import { initialState, type VerifyState } from "../lib/verify";
 import {
   CERTIFICATE_NUMBER_FROM_YEAR,
   EARLIEST_GRADUATION_YEAR,
