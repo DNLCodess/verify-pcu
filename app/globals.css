@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+/*
+  PCU Certificate Verification — design system
+  Mirrors the main site (pcu.edu.ng) and the Short Courses portal:
+  Tailwind v4 tokens, Playfair Display headings + Inter body,
+  deep-purple / red / gold brand palette.
+*/
+
+@theme {
+  /* Brand */
+  --color-primary: #3a0a5e; /* deep purple — nav, footer, bands */
+  --color-primary-foreground: #ffffff;
+  --color-accent: #b91c1c; /* red — CTAs, heading highlights */
+  --color-accent-foreground: #ffffff;
+  --color-gold: #eab308; /* amber/gold accent */
+
+  /* Status */
+  --color-success: #15803d; /* verified — green */
+  --color-danger: #b91c1c; /* not found — red */
+
+  /* Neutrals */
+  --color-background: #f9fafb; /* page background (gray-50) */
+  --color-surface: #ffffff; /* cards, header */
+  --color-foreground: #1f2937; /* body text (gray-800) */
+  --color-muted: #6b7280; /* secondary text (gray-500) */
+  --color-border: #e5e7eb; /* hairlines (gray-200) */
+
+  /* Typography */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
+
+  /* Radius — main site uses ~8px on interactive elements */
+  --radius-md: 8px;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* Headings use Playfair Display, like the main site */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--color-primary);
+}
